@@ -1,0 +1,17 @@
+body {
+  font-family: Helvetica;
+  margin: auto;
+  width: 700px;
+}
+
+video {
+  margin: 30px;
+}
+
+h1 {
+  text-align: center;
+}
+
+div {
+  text-align: center;
+}

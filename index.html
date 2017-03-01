@@ -1,14 +1,50 @@
-<!DOCTYPE HTML>
-
+<!DOCTYPE html>
 <html>
-
 <head>
-  <title>Ralphy</title>
-  <link rel="stylesheet" href="responsive.css"/>
-  <meta charset="utf-8" />
+<meta charset="utf-8" />
+<title>Fail</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
-  <div class="ralphy"></div>
+
+<h1 id="title">Fail</h1>
+
+<video src="https://www.cs.tufts.edu/comp/20/fail.mp4" id="failvideo" controls></video>
+<div id="lyrics"></div>
+
+<script>
+
+  function helpMariahSing() {
+    var words = document.getElementById("lyrics");
+    if (video.currentTime < 8) {
+      words.innerHTML = "Let's sing along with Mariah";
+    } else {
+      var index = Math.floor((video.currentTime - 8) / 4.35);
+      words.innerHTML = songLyrics[index];
+    }     
+  }
+  // event listener
+  var video = document.getElementById("failvideo");
+  video.addEventListener("timeupdate", helpMariahSing);
+
+  // list containing lyrics
+  songLyrics = ["You've got me feelin' emotions",
+                "Deeper than I've ever dreamed of",
+                "You've got me feelin' emotions",
+                "Higher than the heavens above",
+                "I feel good, I feel so nice",
+                "I've never felt so satisfied",
+                "I'm in love, I'm alive",
+                "Intoxicated, flyin' high",
+                "Feels like a dream",
+                "I don't know if it's real",
+                "But I like the way I feel inside",
+                "You've got me feelin' emotions",
+                "Deeper than I've ever dreamed of",
+                "You've got me feelin' emotions",
+                "Higher than the heavens above"]
+ 
+</script>
 </body>
 </html>
