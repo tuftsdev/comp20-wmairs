@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Not Uber</title>
+    <link href = "index.css" rel = "stylesheet">
+
+    <meta name = "viewport" content = "initial-scale=1.0">
+    <meta charset = "utf-8">
+
+    <script src = "http://maps.googleapis.com/maps/api/js?libraries=geometry">
+    </script>
+
+    <script>
+      var myLat = 0;
+      var myLng = 0;
+      var map;
+      var myCoords = new google.maps.LatLng(myLat, myLng);
+      var mapOptions = {
+        center: myCoords,
+        zoom: 15,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      }
+      var myMarker;
+      var infowindow = new google.maps.InfoWindow();
+      
+      var httpRequest = new XMLHttpRequest();
+      var url = "https://defense-in-derpth.herokuapp.com/submit";
+      var params = "username=Rhefuvfg&lat=" + myLat + "&lng=" + myLng;
+      httpRequest.open("POST", url, true);
+      httpRequest.setRequestHeader("Content-type", 
+                            "application/x-www-form-urlencoded");
+
+      httpRequest.onreadystatechange = function() {
+        if(httpRequest.readyState == 4 && httpRequest.status == 200) {
+          checkData(JSON.parse(httpRequest.responseText));
+        }
+      }
+
+      function init() {
+        map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        getMyLocation();
+      }
+
+      function getMyLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            myLat = position.coords.latitude;
+            myLng = position.coords.longitude;
+            renderMap();
+            httpRequest.send(params);
+          });
+        }
+        else {
+          alert("Your browser doesn't know geography, damn.")
+        }
+      }
+
+      function renderMap() {
+        myCoords = new google.maps.LatLng(myLat, myLng);
+        
+        map.panTo(myCoords);
+        
+        myMarker = new google.maps.Marker({
+            position: myCoords,
+            title: "It's me!",
+            icon: "http://i.imgur.com/8LZaci0.png?1"
+        });
+
+        myMarker.setMap(map);
+
+        google.maps.event.addListener(myMarker, 'click', function() {
+          infowindow.setContent(myMarker.title);
+          infowindow.open(map, myMarker);
+        });
+      }
+
+      function checkData(responseData) {
+        if (Object.keys(responseData)[0] == "vehicles") {
+          makeDrivers(responseData.vehicles);
+        } else if (Object.keys(responseData)[0] == "passengers") {
+          makePassengers(responseData.passengers);
+        } else alert("Bad data");
+      }
+
+      function makeDrivers(drivers) {
+        for (var i = 0; i < drivers.length; i++) {
+          var driversCoords = new google.maps.LatLng(drivers[i].lat, 
+                                                     drivers[i].lng);
+          var newDriver = new google.maps.Marker({
+            position: driversCoords,
+            title: drivers[i].username,
+            icon: "https://tuftsdev.github.io/WebProgramming/assignments/black_car.png"
+          });
+
+          newDriver.setMap(map);
+
+          var infowindow = new google.maps.InfoWindow();
+        
+          google.maps.event.addListener(newDriver, 'click', function() {
+            infowindow.setContent("Username: " + this.title + " Distance: " + (google.maps.geometry.spherical.computeDistanceBetween(myCoords, this.position) / 1609.34));
+
+            infowindow.open(map, this);
+
+        });
+        }    
+      }
+
+      function makePassengers(passengers) {
+        for (var i = 0; i < passengers.length; i++) {
+          var passengerCoords = new google.maps.LatLng(passengers[i].lat,
+                                                       passengers[i].lng);
+          var infowindow = new google.maps.InfoWindow();
+          
+          var newPassenger = new google.maps.Marker({
+            position: passengerCoords,
+            title: passengers[i].username,
+            icon: "http://vignette4.wikia.nocookie.net/pixeldungeon/images/1/10/Gold.png/revision/latest?cb=20130505174527"
+          });
+
+          newPassenger.setMap(map);
+
+          
+
+          google.maps.event.addListener(newPassenger, 'click', function() {
+            infowindow.setContent("Username: " + this.title + " Distance: " + (google.maps.geometry.spherical.computeDistanceBetween(myCoords, this.position) / 1609.34));
+            infowindow.open(map, this);
+          });
+        }
+      }
+
+
+    </script>
+  </head>
+  
+  <body onload = "init()" >
+    <div id = "map"></div>
+  </body>
+
+</html>
