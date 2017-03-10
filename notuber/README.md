@@ -8,4 +8,6 @@ All aspects of the assignment have been correctly implemented.
 
 I discussed this assignment with Avery Spratt and Adam Kercheval.
 
+I made ample use of Google's documentation and example code for their APIs.
+
 I spend ~4 hours on this assignment.
